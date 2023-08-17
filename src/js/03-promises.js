@@ -30,13 +30,4 @@ form.addEventListener('submit', evt => {
       });
     counter += Number(step.value);
   }
-  clearInput();
 });
-
-function clearInput() {
-  counter = Number(delay.value);
-
-  // delay.value = '';
-  // step.value = '';
-  // amount.value = '';
-}
