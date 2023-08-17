@@ -22,22 +22,17 @@ const options = {
   minuteIncrement: 1,
   onChange(selectedDates) {
     const nowTime = new Date();
-
     if (!(Number(selectedDates[0]) - nowTime.getTime() < 0)) {
       refs.startBtn.disabled = false;
+      clearTimer();
+      clearInterval(setIntervalID);
     } else {
       refs.startBtn.disabled = true;
     }
   },
-  onOpen(selectedDates, dateStr, instance) {
-    if (true) {
-      clearTimer();
-      clearInterval(setIntervalID);
-    }
-  },
-  onClose(selectedDates, dateStr, instance) {
+  onClose(selectedDates) {
     const nowTime = new Date();
-    if (!(Number(selectedDates[0]) - nowTime.getTime() < 0)) {
+    if (Number(selectedDates[0] - nowTime.getTime() > 0)) {
       Notify.success('Something will happen');
       time = selectedDates[0];
     } else {
@@ -57,16 +52,14 @@ function handlerStart() {
   clearInterval(setIntervalID);
 
   const nowTime = new Date();
-  createTimer(nowTime)
-  
+  createTimer(nowTime);
+
   setIntervalID = setInterval(() => {
     const nowTime = new Date();
-
     if (time - nowTime < 0) {
       clearInterval(setIntervalID);
       return;
     }
-
     createTimer(nowTime);
   }, 1000);
 }
@@ -76,7 +69,6 @@ function createTimer(nowTime) {
   refs.spanHours.textContent = addLeadingZero(String(hours));
   refs.spanMinutes.textContent = addLeadingZero(String(minutes));
   refs.spanSeconds.textContent = addLeadingZero(String(seconds));
-  return convertMs(time - nowTime);
 }
 function clearTimer() {
   refs.spanDays.textContent = '00';
@@ -91,13 +83,9 @@ function convertMs(ms) {
   const hour = minute * 60;
   const day = hour * 24;
 
-  // Remaining days
   const days = Math.floor(ms / day);
-  // Remaining hours
   const hours = Math.floor((ms % day) / hour);
-  // Remaining minutes
   const minutes = Math.floor(((ms % day) % hour) / minute);
-  // Remaining seconds
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
